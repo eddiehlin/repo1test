@@ -139,9 +139,9 @@ df.head()
 **Your Findings:**
 The actual values look pretty consistent and realistic. 
 
-- Do you notice any categorical variables that are already human-readable vs. encoded?
+Most of the values are human readable such as sex, age, cp, slope, etc., but certain ones such as num and origin are confusing to those who aren't familiar with the dataset.
 
-- Are there any values that look like they might be placeholders for missing data?
+Some placeholder values within the dataset are 0s within columns where it would be impossible such as chol and trestbps, other columns use Null/NaN for placeholders/missing values such as ca, thal, slope, fbs, oldpeak, tresbps, thalch, exang, and chol.
 
 ---
 
@@ -149,15 +149,17 @@ The actual values look pretty consistent and realistic.
 
 **Your Code:**
 ```python
-
+# Point 5 - Tail
+print("Last 5 Rows:")
+df.tail()
 ```
 
 **Your Findings:**
-- Does the data end cleanly?
+The data ends decently cleanly, with all columns existing, but there are lots of missing values.
 
-- Are the last rows consistent with the first rows?
+The last rows are pretty consistent with the first rows in terms of similar values and variety, but there are slightly more hypertension present patients.
 
-- Do you notice more or fewer missing values in later rows?
+There are a lot more missing values in the last rows compared to the first because the first had 0 while the worst of the last 5 rows is missing 7 columns.
 
 ---
 
@@ -165,12 +167,18 @@ The actual values look pretty consistent and realistic.
 
 **Your Code:**
 ```python
+# Point 6 - Memory Usage
+print("Memory Usage by Column:")
+print(df.memory_usage(deep=True))
 
+# Total memory in MB
+total_memory_mb = df.memory_usage(deep=True).sum() / 1e6
+print(f"\n Total Memory Usage: {total_memory_mb:.2f} MB")
 ```
 
 **Your Findings:**
-- How much memory does the dataset use? _______________ MB
-- Is this a "small" or "large" dataset by data science standards?
+The dataset uses 0.42 MB of storage. 
+This is a small dataset by data science standards because it is easily runnable across softwares and it performs well in excel and can be used with simple code that doesn't need optimization without any drawbacks.
 
 ---
 
@@ -178,15 +186,41 @@ The actual values look pretty consistent and realistic.
 
 **Your Code:**
 ```python
+# Point 7 - Missing Values
+print("Missing Values by Column:")
 
+# Calculate raw counts and percentages
+missing = df.isnull().sum()
+missing_pct = (missing / len(df)) * 100
+
+# Combine them into a single summary table
+missing_summary = pd.DataFrame({
+    'Missing Values': missing,
+    'Percentage (%)': missing_pct
+})
+
+# Display the table, rounding percentages to 2 decimal places for cleanliness
+print(missing_summary.round(2))
+
+print("\n" + "="*50)
+
+# Calculate total missing values
+total_missing = missing.sum()
+print(f" Total Missing Values: {total_missing}")
+
+# Check condition
+if total_missing == 0:
+    print("Great! No missing values - complete dataset!")
+else:
+    print(f" {total_missing} missing values need attention")
 ```
 
 **Your Findings:**
-- Which columns have missing values?
+The columns missing values are trestbps, chol, fbs, restecg, thalch, exang, oldpeak, oldpeak, slope, ca, thal.
 
-- What percentage of each column is missing?
+The percentages are ca: 66.41%, thal: 52.83%, slope: 33.59%, fbs: 9.78%, oldpeak: 6.74%, trestbps: 6.41%, thalch: 5.98%, exang: 5.98%, chol: 3.26%,and restecg: 0.22%.
 
-- Which columns have the MOST missing data? What might explain this?
+The columns that have the most missing values are ca, thal, and slope. Looking at the dataset these are missing mostly from the rows that originate from all the hospitals other than Cleveland. This could be due to these tests being more expensive and these other hospitals could lack the resources to commonly do these tests.
 
 ---
 
@@ -195,7 +229,7 @@ The actual values look pretty consistent and realistic.
 **Your Code:**
 ```python
 
-```
+``` 
 
 **Your Findings:**
 - Are there any duplicate rows? _______________
